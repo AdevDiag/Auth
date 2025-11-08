@@ -1,6 +1,6 @@
 import React, { useActionState } from 'react'
 import InputField from '../Components/InputField'
-import {Link} from "react-router-dom"
+import {Link, useNavigate} from "react-router-dom"
 import axios from "axios"
 const SignUp = () => {
   const initialState={
@@ -9,13 +9,14 @@ const SignUp = () => {
     password:'',
     error:null
   };
+  const navigate=useNavigate()
   const handleLogin=async(previousData,currentFormData)=>{
     try{
       const {username,email,password}=Object.fromEntries(currentFormData);
       const response=await axios.post('http://localhost:8080/api/auth/signup',{username,email,password},{withCredentials:true})
       const data= await response.data;
       console.log(data)
-
+      navigate('/sign-in')
     }catch(error){
       let message=error?.response?.data?.message || error?.message;
       return {...previousData,error:message}
