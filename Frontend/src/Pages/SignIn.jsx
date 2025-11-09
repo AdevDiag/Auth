@@ -2,6 +2,8 @@ import React, { useActionState } from 'react'
 import InputField from '../Components/InputField'
 import {Link, useNavigate} from "react-router-dom"
 import axios from "axios"
+import { loginUser } from '../redux/user/UserSlice'
+import { useDispatch } from 'react-redux'
 const SignIn = () => {
   const initialState={
     email:'',
@@ -9,12 +11,14 @@ const SignIn = () => {
     error:null
   };
   const navigate=useNavigate()
+  const dispatch=useDispatch();
   const handleLogin=async(previousData,currentFormData)=>{
     try{
       const {email,password}=Object.fromEntries(currentFormData);
       const response=await axios.post('http://localhost:8080/api/auth/signin',{email,password},{withCredentials:true})
       const data= await response.data;
       console.log(data)
+      dispatch(loginUser(data.user))
       navigate('/')
 
     }catch(error){

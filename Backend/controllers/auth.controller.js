@@ -27,8 +27,11 @@ export const signin=async(request,response)=>{
         if(!findUser) throw new Error("User not found!");
         let isPasswordCorrect=await bcrypt.compare(password,findUser.password);
         if(!isPasswordCorrect) throw new Error("Invalid email or password");
+        let {password:_,...rest}=findUser.toObject()
         const token=jwt.sign({id:findUser._id},process.env.JWT_SECRET,{expiresIn:1000*60*60})
-        return response.status(200).cookie('access_token',token,{httpOnly:true,sameSite:'strict',secure:true,maxAge:1000*60*60}).send({success:true,error:false,message:"User logged In succesfully"});
+        return response.status(200).cookie('access_token',token,
+            {httpOnly:true,sameSite:'strict',secure:true,maxAge:1000*60*60})
+            .send({success:true,error:false,message:"User logged In succesfully",user:rest});
     }catch(error){
         const errorsMap={
             "User not found!":404,
