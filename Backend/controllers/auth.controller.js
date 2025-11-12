@@ -44,3 +44,34 @@ export const signin=async(request,response)=>{
         })
     }
 }
+
+export const google=async(request,response)=>{
+    try{
+        const {username,email,photoURL}=request.body
+        const findUser=await userModel.findOne({email:email});
+        
+        if(findUser){
+            const token=jwt.sign({id:findUser._id},process.env.JWT_SECRET,{expiresIn:1000*60*60});
+            let {password:_,...rest}=findUser.toObject()
+            return response.status(200).cookie('access_token',token,
+            {httpOnly:true,sameSite:'strict',secure:true,maxAge:1000*60*60})
+            .send({success:true,error:false,message:"User logged In succesfully",user:rest});
+        }else{
+            let generatedPwd=Math.random().toString(36).slice(-8);
+            let hashedPwd=await bcrypt.hash(generatedPwd,10);
+            let newUser={username:username.split(" ").join("").toLowerCase()+ Math.floor(Math.random()*10000).toString(),
+                email,
+                password:hashedPwd}
+            newUser=photoURL?{...newUser,profilePic:photoURL}:{...newUser}
+            const addNewUser=new userModel(newUser);
+            await addNewUser.save();
+            const token=jwt.sign({id:addNewUser._id},process.env.JWT_SECRET,{expiresIn:1000*60*60});
+            const {password:_,...rest}=addNewUser.toObject();
+            return response.status(200).cookie('access_token',token,
+            {httpOnly:true,sameSite:'strict',secure:true,maxAge:1000*60*60})
+            .send({success:true,error:false,message:"User logged In succesfully",user:rest});
+        }
+    }catch(error){
+
+    }
+}

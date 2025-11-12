@@ -2,6 +2,8 @@ import React, { useActionState } from 'react'
 import InputField from '../Components/InputField'
 import {Link, useNavigate} from "react-router-dom"
 import axios from "axios"
+import OAuth from '../Components/OAuth'
+
 const SignUp = () => {
   const initialState={
     username:'',
@@ -35,6 +37,7 @@ const SignUp = () => {
         className='bg-indigo-700 text-white p-3 rounded-lg uppercase hover:opacity-90 transition-all duration-150 disabled:opacity-60' 
         disabled={isPending}>{isPending? 'Checking ...':'Sign up'}</button>
       
+      <OAuth/>
       </form>
       <div className='flex gap-2 mt-5'>
         <p>Have an account?</p>
