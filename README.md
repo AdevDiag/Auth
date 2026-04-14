@@ -32,8 +32,8 @@ A clean, full-stack authentication starter featuring **Email/Password** login an
 
 1. Clone the repo:
 ```bash
-git clone [your-repo-link]
-cd [your-project-folder]
+git clone https://github.com/AdevDiag/Auth.git
+cd AuthentificationSystem
 
 cd backend
 npm install
